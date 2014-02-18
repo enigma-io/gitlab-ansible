@@ -1,0 +1,6 @@
+---
+
+- include: default.yml
+- include: postgres.yml
+- include: gitlab.yml
+

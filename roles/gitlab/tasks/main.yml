@@ -1,0 +1,84 @@
+---
+
+- name: Clone the GitLab 6.5-stable repository
+  sudo: True
+  sudo_user: git
+  git: repo=https://github.com/gitlabhq/gitlabhq.git dest=/home/git/gitlab version=6-5-stable
+
+- name: Write the GitLab config file
+  sudo: True
+  sudo_user: git
+  action: template src=gitlab.yml.j2 dest=/home/git/gitlab/config/gitlab.yml mode=0755
+
+- name: Ensure that the GitLab socket directory exists
+  sudo: True
+  sudo_user: git
+  action: file path=/home/git/gitlab/tmp/sockets state=directory
+
+- name: Ensure that the GitLab log directory is writable
+  sudo: True
+  sudo_user: git
+  action: file path=/home/git/gitlab/log mode=0755 recurse=yes
+
+- name: Ensure that the GitLab tmp directory is writable
+  sudo: True
+  sudo_user: git
+  action: file path=/home/git/gitlab/tmp mode=0755 recurse=yes
+
+- name: Ensure that the gitlab-satellites directory exists
+  sudo: True
+  sudo_user: git
+  file: state=directory path=/home/git/gitlab-satellites
+
+- name: Write the GitLab database config
+  sudo: True
+  sudo_user: git
+  action: template src=database.yml.j2 dest=/home/git/gitlab/config/database.yml mode=0755
+
+- name: Copy the GitLab Unicorn config
+  sudo: True
+  sudo_user: git
+  shell: cp /home/git/gitlab/config/unicorn.rb.example /home/git/gitlab/config/unicorn.rb
+
+- name: Install the GitLab bundle
+  sudo: True
+  sudo_user: git
+  shell: /usr/local/bin/bundle install --deployment --without development test mysql chdir=/home/git/gitlab
+
+- name: Run the GitLab setup raketask
+  sudo: True
+  sudo_user: git
+  shell: /usr/bin/yes 'yes' | /usr/local/bin/bundle exec rake gitlab:setup RAILS_ENV=production chdir=/home/git/gitlab
+
+- name: Run the GitLab assets precompile raketask
+  sudo: True
+  sudo_user: git
+  shell: /usr/bin/yes 'yes' | /usr/local/bin/bundle exec rake assets:precompile RAILS_ENV=production chdir=/home/git/gitlab
+
+- name: Copy GitLab default to /etc/default
+  sudo: True
+  shell: /bin/cp /home/git/gitlab/lib/support/init.d/gitlab.default.example /etc/default/gitlab
+
+- name: Ensure that GitLab default has proper permissions
+  sudo: True
+  file: path=/etc/default/gitlab mode=0755
+
+- name: Copy GitLab init.d script to /etc/init.d
+  sudo: True
+  shell: /bin/cp /home/git/gitlab/lib/support/init.d/gitlab /etc/init.d/gitlab
+
+- name: Ensure that GitLab init.d script has proper permissions
+  sudo: True
+  file: path=/etc/init.d/gitlab mode=0755
+
+- name: Ensure that the GitLab service is enabled
+  sudo: True
+  service: name=gitlab enabled=yes
+
+- name: Ensure that GitLab is stopped
+  sudo: True
+  service: name=gitlab state=stopped
+
+- name: Ensure that GitLab is started
+  sudo: True
+  service: name=gitlab state=started

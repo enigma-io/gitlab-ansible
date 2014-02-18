@@ -1,0 +1,16 @@
+---
+
+- name: Clone the Gitlab-Shell repository
+  sudo: True
+  sudo_user: git
+  git: repo=https://github.com/gitlabhq/gitlab-shell.git dest=/home/git/gitlab-shell version=v1.8.0
+
+- name: Write the Gitlab-Shell config
+  sudo: True
+  sudo_user: git
+  action: template src=gitlab_shell_config.yml.j2 dest=/home/git/gitlab-shell/config.yml mode=0755
+
+- name: Install Gitlab-Shell
+  sudo: True
+  sudo_user: git
+  shell: /home/git/gitlab-shell/bin/install

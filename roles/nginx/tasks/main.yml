@@ -1,0 +1,29 @@
+---
+
+- name: Ensure that the Nginx package is present
+  sudo: True
+  apt: state=present pkg=nginx
+
+- name: Write the Nginx GitLab config
+  sudo: True
+  action: template src=nginx.conf.j2 dest=/etc/nginx/sites-available/gitlab mode=0755
+
+- name: Ensure that the Nginx default site is disabled
+  sudo: True
+  file: state=absent path=/etc/nginx/sites-enabled/default
+
+- name: Ensure that the Nginx GitLab site is enabled
+  sudo: True
+  file: state=link src=/etc/nginx/sites-available/gitlab path=/etc/nginx/sites-enabled/gitlab
+
+- name: Ensure that the Nginx service is enabled
+  sudo: True
+  service: name=nginx enabled=yes
+
+- name: Ensure that Nginx is stopped
+  sudo: True
+  service: name=nginx state=stopped
+
+- name: Ensure that Nginx is started
+  sudo: True
+  service: name=nginx state=started

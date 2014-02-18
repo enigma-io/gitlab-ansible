@@ -1,0 +1,8 @@
+---
+
+- hosts: all
+  vars_files:
+    - vars/user.yml
+
+  roles:
+    - postgres

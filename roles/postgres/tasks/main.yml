@@ -1,0 +1,11 @@
+---
+
+- name: Ensure that the gitlabhq_production database exists
+  sudo: True
+  sudo_user: postgres
+  postgresql_db: state=present name=gitlabhq_production template='template1'
+
+- name: Ensure that the gitlab database user exists with ALL privileges for the gitlabhq_production database
+  sudo: True
+  sudo_user: postgres
+  postgresql_user: state=present name=git password={{ db_password }} priv=ALL db=gitlabhq_production

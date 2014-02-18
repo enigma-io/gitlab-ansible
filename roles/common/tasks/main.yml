@@ -1,0 +1,52 @@
+---
+
+- name: Set /etc/hostname to the domain
+  sudo: True
+  action: template src=hostname.j2 dest=/etc/hostname
+
+- name: Add the domain to /etc/hosts
+  sudo: True
+  action: template src=hosts.j2 dest=/etc/hosts
+
+- name: Ensure that the git user is present
+  sudo: True
+  user: state=present name=git system=yes
+
+- name: Ensure that the apt package list is up to date
+  sudo: True
+  action: apt update_cache=yes
+
+- name: Ensure that the currently installed apt packages are up to date
+  sudo: True
+  action: apt upgrade=yes
+
+- name: Ensure that the GitLab apt dependencies are installed
+  sudo: True
+  action: apt pkg={{ item }}
+  with_items:
+    - build-essential
+    - zlib1g-dev
+    - libyaml-dev
+    - libssl-dev
+    - libgdbm-dev
+    - libreadline-dev
+    - libncurses5-dev
+    - libffi-dev
+    - curl
+    - git-core
+    - openssh-server
+    - redis-server
+    - postfix
+    - checkinstall
+    - libxml2-dev
+    - libxslt1-dev
+    - libcurl4-openssl-dev
+    - libicu-dev
+    - logrotate
+    - postgresql
+    - libpq-dev
+    - python-psycopg2
+
+- name: Ensure that /usr/local/bin/python2 is linked to /usr/bin/python
+  sudo: True
+  file: src=/usr/bin/python path=/usr/local/bin/python2 state=link

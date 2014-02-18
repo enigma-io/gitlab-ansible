@@ -1,0 +1,9 @@
+---
+
+- hosts: all
+  vars_files:
+    - vars/user.yml
+
+  roles:
+    - gitlab-shell
+    - gitlab
