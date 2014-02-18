@@ -39,7 +39,7 @@ Password: 5iveL!fe
 Originally based on [tingtun /
 ansible-playbook-gitlab](https://github.com/tingtun/ansible-playbook-gitlab).
 
-Contributors to this repo include:
+Contributors to this repository include:
 
 * Patrick Stankard (https://github.com/PatrickStankard)
 
