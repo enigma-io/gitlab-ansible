@@ -3,7 +3,7 @@
 - name: Clone the Gitlab-Shell repository
   sudo: True
   sudo_user: git
-  git: repo=https://github.com/gitlabhq/gitlab-shell.git dest=/home/git/gitlab-shell version=v1.8.0
+  git: repo=https://github.com/gitlabhq/gitlab-shell.git dest=/home/git/gitlab-shell version={{ gitlab_shell_version }}
 
 - name: Write the Gitlab-Shell config
   sudo: True
