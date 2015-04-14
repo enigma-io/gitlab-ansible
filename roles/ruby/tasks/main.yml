@@ -7,7 +7,7 @@
   get_url: url={{ url }} dest=/tmp/ruby
 
 - name: Extract the Ruby source
-  shell: /bin/tar -xf ruby-2.1.0.tar.gz chdir=/tmp/ruby creates={{ path }}
+  shell: /bin/tar -xf ruby-{{ruby_version}}.tar.gz chdir=/tmp/ruby creates={{ path }}
 
 - name: Configure the Ruby source
   shell: ./configure chdir={{ path }} creates={{ path }}/Makefile
@@ -21,8 +21,8 @@
 
 - name: Install Bundler
   sudo: True
-  shell: /usr/local/bin/gem install bundler creates=/usr/local/lib/ruby/gems/2.1.0/gems/bundler-1.5.3
+  shell: /usr/local/bin/gem install bundler --no-ri --no-rdoc creates=/usr/local/lib/ruby/gems/{{ ruby_version }}/gems/bundler
 
 - name: Install the charlock_holmes gem
   sudo: True
-  shell: /usr/local/bin/gem install charlock_holmes --version '0.6.9.4'
+  shell: /usr/local/bin/gem install charlock_holmes --version '{{ charlock_holmes_version }}'
