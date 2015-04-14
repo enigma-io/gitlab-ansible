@@ -5,3 +5,9 @@ domain: TODO.com
 
 # database
 db_password: TODO
+
+# gitlab's version
+gitlab_version: TODO
+
+# gitlab-shell's version
+gitlab_shell_version: TODO
